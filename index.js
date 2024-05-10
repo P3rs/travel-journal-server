@@ -40,7 +40,7 @@ app.use(express.json());
 
 
 app.use(cors({
-origin: "http://localhost:3000",
+origin: "https://travel-magazine-app.netlify.app",
 credentials: true
 }))
 
