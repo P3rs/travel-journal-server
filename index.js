@@ -6,6 +6,7 @@ import multer from "multer";
 import mongoose from "mongoose"; 
 import userRoute from "./routes/user.js"; 
 import entryRoute from "./routes/entry.js";
+import favoriteRoute from "./routes/favorite.js";
 import Image from "./models/Image.js"
 import cookieParser from "cookie-parser"; 
 import cors from "cors"
@@ -78,9 +79,11 @@ app.get('/uploads/:id', async (req, res) => {
 app.use(morgan("common")); 
 
 app.use("/api/users", userRoute); 
-app.use("/api/entries", entryRoute); 
+app.use("/api/entries", entryRoute);
+app.use("/api/favorite", favoriteRoute);
 
-app.listen(PORT, () => { 
-console.log("Listening on port 5500"); 
+
+app.listen(PORT, () => {
+console.log("Listening on port 5500");
 connect(); 
 });

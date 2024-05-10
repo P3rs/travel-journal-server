@@ -13,7 +13,6 @@ router.post("/", createEntry);
 router.put("/:id", updateEntry); 
 router.delete("/:id", deleteEntry); 
 router.get("/", getEntries);
-// router.get(`/favorite/:id`, getFavoriteEntries);
 router.get("/:id", getEntry) 
 
 export default router;
