@@ -1,89 +1,84 @@
-import express from "express"; 
-import dotenv from "dotenv"; 
-import helmet from "helmet"; 
+import express from "express";
+import dotenv from "dotenv";
 import morgan from "morgan";
 import multer from "multer";
-import mongoose from "mongoose"; 
-import userRoute from "./routes/user.js"; 
+import mongoose from "mongoose";
+import userRoute from "./routes/user.js";
 import entryRoute from "./routes/entry.js";
 import favoriteRoute from "./routes/favorite.js";
-import Image from "./models/Image.js"
-import cookieParser from "cookie-parser"; 
-import cors from "cors"
+import Image from "./models/Image.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-const app = express(); 
+const app = express();
 dotenv.config();
 
-const PORT = process.env.PORT || 5500; 
+const PORT = process.env.PORT || 5500;
 
-const connect = async () => { 
-try { 
-	await mongoose.connect(process.env.MONGO); 
-	console.log("Connected to mongoDB."); 
-} catch (error) { 
-	throw error; 
-} 
-}; 
+const connect = async () => {
+	try {
+		await mongoose.connect(process.env.MONGO);
+		console.log("Connected to mongoDB.");
+	} catch (error) {
+		throw error;
+	}
+};
 
-mongoose.connection.on("disconnected", () => { 
-console.log("mongoDB disconnected!"); 
-}); 
+mongoose.connection.on("disconnected", () => {
+	console.log("mongoDB disconnected!");
+});
 
-app.get('/', (req, res) => { res.send('Hello from Express!') }); 
+app.get("/", (req, res) => {
+	res.send("Hello from Express!");
+});
 
-//middlewares 
-app.use(cookieParser()) 
-app.use(express.json()); 
+//middlewares
+app.use(cookieParser());
+app.use(express.json());
 // app.use(helmet());
 
+app.use(cors());
 
-app.use(cors({
-origin: "https://travel-magazine-app.netlify.app",
-credentials: true
-}))
-
-app.post('/upload', upload.single('image'), async (req, res) => {
+app.post("/upload", upload.single("image"), async (req, res) => {
 	try {
 		const newImage = new Image({
 			name: req.file.originalname,
 			img: {
 				data: req.file.buffer,
-				contentType: req.file.mimetype
-			}
+				contentType: req.file.mimetype,
+			},
 		});
 		await newImage.save();
-		res.json({id: newImage._id });
+		res.json({ id: newImage._id });
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ error: 'Error saving image' });
+		res.status(500).json({ error: "Error saving image" });
 	}
 });
 
-app.get('/uploads/:id', async (req, res) => {
+app.get("/uploads/:id", async (req, res) => {
 	try {
 		const image = await Image.findById(req.params.id);
 		if (!image || !image.img.data) {
-			return res.status(404).send('Image not found');
+			return res.status(404).send("Image not found");
 		}
-		res.set('Content-Type', image.img.contentType);
+		res.set("Content-Type", image.img.contentType);
 		res.send(image.img.data);
 	} catch (error) {
 		console.error(error);
-		res.status(500).send('Server error');
+		res.status(500).send("Server error");
 	}
 });
 
+app.use(morgan("common"));
 
-app.use(morgan("common")); 
-
-app.use("/api/users", userRoute); 
+app.use("/api/users", userRoute);
 app.use("/api/entries", entryRoute);
 app.use("/api/favorite", favoriteRoute);
 
-
 app.listen(PORT, () => {
-console.log("Listening on port 5500");
-connect(); 
+	console.log("Listening on port 5500");
+	connect();
 });
