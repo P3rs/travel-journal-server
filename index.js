@@ -18,20 +18,20 @@ dotenv.config();
 const PORT = process.env.PORT || 5500;
 
 const connect = async () => {
-	try {
-		await mongoose.connect(process.env.MONGO);
-		console.log("Connected to mongoDB.");
-	} catch (error) {
-		throw error;
-	}
+    try {
+        await mongoose.connect(process.env.MONGO);
+        console.log("Connected to mongoDB.");
+    } catch (error) {
+        throw error;
+    }
 };
 
 mongoose.connection.on("disconnected", () => {
-	console.log("mongoDB disconnected!");
+    console.log("mongoDB disconnected!");
 });
 
 app.get("/", (req, res) => {
-	res.send("Hello from Express!");
+    res.send("Hello from Express!");
 });
 
 //middlewares
@@ -42,34 +42,34 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/upload", upload.single("image"), async (req, res) => {
-	try {
-		const newImage = new Image({
-			name: req.file.originalname,
-			img: {
-				data: req.file.buffer,
-				contentType: req.file.mimetype,
-			},
-		});
-		await newImage.save();
-		res.json({ id: newImage._id });
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ error: "Error saving image" });
-	}
+    try {
+        const newImage = new Image({
+            name: req.file.originalname,
+            img: {
+                data: req.file.buffer,
+                contentType: req.file.mimetype,
+            },
+        });
+        await newImage.save();
+        res.json({ id: newImage._id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error saving image" });
+    }
 });
 
 app.get("/uploads/:id", async (req, res) => {
-	try {
-		const image = await Image.findById(req.params.id);
-		if (!image || !image.img.data) {
-			return res.status(404).send("Image not found");
-		}
-		res.set("Content-Type", image.img.contentType);
-		res.send(image.img.data);
-	} catch (error) {
-		console.error(error);
-		res.status(500).send("Server error");
-	}
+    try {
+        const image = await Image.findById(req.params.id);
+        if (!image || !image.img.data) {
+            return res.status(404).send("Image not found");
+        }
+        res.set("Content-Type", image.img.contentType);
+        res.send(image.img.data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
+    }
 });
 
 app.use(morgan("common"));
@@ -79,6 +79,6 @@ app.use("/api/entries", entryRoute);
 app.use("/api/favorite", favoriteRoute);
 
 app.listen(PORT, () => {
-	console.log("Listening on port 5500");
-	connect();
+    console.log("Listening on port 5500");
+    connect();
 });

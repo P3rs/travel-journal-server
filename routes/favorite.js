@@ -1,8 +1,8 @@
 import express from "express";
 import {
-    addFavorite,
-    removeFavorite,
-    getFavorite,
+  addFavorite,
+  removeFavorite,
+  getFavorite,
 } from "../controllers/favorite.js";
 
 const router = express.Router();

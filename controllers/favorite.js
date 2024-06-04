@@ -32,11 +32,11 @@ export const removeFavorite = async (req, res, next) => {
 };
 
 export const getFavorite = async (req, res, next) => {
-    try {
-        const userId = req.body.userId;
-        const entries = await Favorite.find({ user_id: userId });
-        res.status(200).json(entries);
-    } catch (err) {
-        next(err);
-    }
+  try {
+    const userId = req.body.userId;
+    const entries = await Favorite.find({ user_id: userId });
+    res.status(200).json(entries);
+  } catch (err) {
+    next(err);
+  }
 };
